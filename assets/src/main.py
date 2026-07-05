@@ -36,17 +36,34 @@ def download_new_version():
     with zipfile.ZipFile("update.zip") as zip_ref:
         zip_ref.extractall("temp")
 
-        with open("update.bat", "w") as f:
-            f.write("@echo off\n"
-                    "timeout /t 2 >nul\n"
-                    "xcopy temp\\Fun-Prank-Bot-For-Younger-Brother-main\\* . /E /Y\n"
-                    "rmdir /s /q temp\n"
-                    "del /q update.zip\n"
-                    "start "" main.exe\n"
-                    "del \"%~f0\"\n")
-        bot.stop_polling()
-        os.startfile("update.bat")
-        sys.exit()
+    with open("update.bat", "w") as f:
+        f.write(r'''@echo off
+            setlocal
+
+            echo Waiting for main.exe to close...
+            timeout /t 2 /nobreak >nul
+
+            :waitloop
+            tasklist /FI "IMAGENAME eq main.exe" | find /I "main.exe" >nul
+            if not errorlevel 1 (
+                timeout /t 1 /nobreak >nul
+                goto waitloop
+            )
+
+            echo Copying new files...
+            xcopy "temp\Fun-Prank-Bot-For-Younger-Brother-main\*" "." /E /H /C /I /Y
+
+            echo Cleaning up...
+            rmdir /S /Q temp
+            del /Q update.zip
+
+            echo Starting new version...
+            start "" "main.exe"
+
+            del "%~f0"''')
+    bot.stop_polling()
+    os.startfile("update.bat")
+    os._exit(0)
 
 def notify_update_done():
     if os.path.exists("last_update_chat.txt"):
