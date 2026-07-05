@@ -27,44 +27,19 @@ def download_new_version():
     url = "https://github.com/Speedy35462/Fun-Prank-Bot-For-Younger-Brother/archive/refs/heads/main.zip"
 
     r = requests.get(url)
-
-    with open("update.zip","wb") as f:
+    with open("update.zip", "wb") as f:
         f.write(r.content)
     
     import zipfile
-
     with zipfile.ZipFile("update.zip") as zip_ref:
         zip_ref.extractall("temp")
 
-    with open("update.bat", "w") as f:
-        f.write(r'''@echo off
-            setlocal
-
-            echo Waiting for main.exe to close...
-            timeout /t 2 /nobreak >nul
-
-            :waitloop
-            tasklist /FI "IMAGENAME eq main.exe" | find /I "main.exe" >nul
-            if not errorlevel 1 (
-                timeout /t 1 /nobreak >nul
-                goto waitloop
-            )
-
-            echo Copying new files...
-            xcopy "temp\Fun-Prank-Bot-For-Younger-Brother-main\*" "." /E /H /C /I /Y
-
-            echo Cleaning up...
-            rmdir /S /Q temp
-            del /Q update.zip
-
-            echo Starting new version...
-            start "" "main.exe"
-
-            del "%~f0"''')
-    bot.stop_polling()
-    os.startfile("update.bat")
-    os._exit(0)
-
+    if os.path.exists("update.bat"):
+        bot.stop_polling()
+        subprocess.Popen(["cmd", "/c", "update.bat"], creationflags=subprocess.CREATE_NEW_CONSOLE)
+        os._exit(0)
+    else:
+        print("Error: update.bat not found in the bot's folder!")
 def notify_update_done():
     if os.path.exists("last_update_chat.txt"):
         with open("last_update_chat.txt") as f:
