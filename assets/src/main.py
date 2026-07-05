@@ -58,7 +58,7 @@ load_dotenv()
 
 VERSION = get_version()
 
-bot = telebot.TeleBot(os.getenv("TEST_BOT_TOKEN"), parse_mode=None)
+bot = telebot.TeleBot(os.getenv("BOT_TOKEN"), parse_mode=None)
 
 notify_update_done()
 
