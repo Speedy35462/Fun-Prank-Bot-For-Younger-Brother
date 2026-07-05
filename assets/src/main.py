@@ -89,6 +89,7 @@ def update(message):
     bot.send_message(message.chat.id, "Checking updates...")
 
     new_version = check_available_version()
+    VERSION = get_version()
 
     bot.send_message(
         message.chat.id,
