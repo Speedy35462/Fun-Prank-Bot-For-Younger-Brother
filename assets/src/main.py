@@ -67,10 +67,10 @@ bot = telebot.TeleBot(os.getenv("BOT_TOKEN"), parse_mode=None)
 notify_update_done()
 
 markup = telebot.types.ReplyKeyboardMarkup()
-send_screenshot = telebot.types.KeyboardButton('Send Screenshot')
-play_sound = telebot.types.KeyboardButton('Play Sound')
-console_acces = telebot.types.KeyboardButton('Console')
-update_button = telebot.types.KeyboardButton('/update')
+send_screenshot = telebot.types.KeyboardButton('Send Screenshot 📷')
+play_sound = telebot.types.KeyboardButton('Play Sound 🎧')
+console_acces = telebot.types.KeyboardButton('Console 💻')
+update_button = telebot.types.KeyboardButton('Update 🔄')
 markup.row(send_screenshot,play_sound)
 markup.row(console_acces, update_button)
 
@@ -88,7 +88,7 @@ def send_version(message):
     VERSION = get_version()
     bot.send_message(message.chat.id, f"Version: {VERSION}")
 
-@bot.message_handler(commands=['update'])
+@bot.message_handler(func=lambda message: message.text == "Update 🔄")
 def update(message):
     bot.send_message(message.chat.id, "Checking updates...")
 
@@ -111,7 +111,7 @@ def update(message):
         bot.send_message(message.chat.id, "Version is up to date")
 
 
-@bot.message_handler(func=lambda message: message.text == "Send Screenshot")
+@bot.message_handler(func=lambda message: message.text == "Send Screenshot 📷")
 def send_screenshot(message):
     bot.send_message(message.chat.id,"Sending Screenshot...")
 
@@ -125,12 +125,12 @@ def send_screenshot(message):
         bot.send_message(message.chat.id, str(e))
     
 
-@bot.message_handler(func=lambda message: message.text == "Play Sound")
+@bot.message_handler(func=lambda message: message.text == "Play Sound 🎧")
 def play_sound(message):
     bot.send_message(message.chat.id,"Playing Sound...")
     subprocess.run(["playsound", "assets/music/fun-sound.mp3"])
 
-@bot.message_handler(func=lambda message: message.text == "Console")
+@bot.message_handler(func=lambda message: message.text == "Console 💻")
 def console_command_input(message):
     sent_msg = bot.send_message(message.chat.id, "Enter command for console:")
     bot.register_next_step_handler(sent_msg, execute_console_command)
