@@ -23,16 +23,20 @@ def check_available_version():
 
     return r.text.strip()
 
-def download_new_version():
+def download_new_version(message):
     url = "https://github.com/Speedy35462/Fun-Prank-Bot-For-Younger-Brother/archive/refs/heads/main.zip"
 
     r = requests.get(url)
     with open("update.zip", "wb") as f:
         f.write(r.content)
+
+    bot.send_message(message.chat.id, "Update downloaded. Installing...")
     
     import zipfile
     with zipfile.ZipFile("update.zip") as zip_ref:
         zip_ref.extractall("temp")
+
+    bot.send_message(message.chat.id, "Update installed. Restarting bot...")
 
     if os.path.exists("update.bat"):
         bot.stop_polling()
@@ -54,7 +58,7 @@ load_dotenv()
 
 VERSION = get_version()
 
-bot = telebot.TeleBot(os.getenv("BOT_TOKEN"), parse_mode=None)
+bot = telebot.TeleBot(os.getenv("TEST_BOT_TOKEN"), parse_mode=None)
 
 notify_update_done()
 
@@ -97,7 +101,7 @@ def update(message):
 
         bot.send_message(message.chat.id, "Updating...")
 
-        download_new_version()
+        download_new_version(message)
 
     else:
         bot.send_message(message.chat.id, "Version is up to date")
